@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rose Day Greeting Card</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Basic styling for flowers */
+    .flower {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background-color: #f9a8d4;
+      border-radius: 50%;
+      opacity: 0;
+      animation: flowerAnimation 2s forwards;
+      pointer-events: none;
+    }
+
+    @keyframes flowerAnimation {
+      0% {
+        opacity: 1;
+        transform: scale(0) translate(0, 0);
+      }
+      50% {
+        transform: scale(1.5) translate(var(--x), var(--y));
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0) translate(var(--x), var(--y));
+      }
+    }
+
+    /* Flower container */
+    .flower-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+
+    /* Matrix Rain Styling */
+    .matrix {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: -1;
+      color: #FF6F61;  /* Light Red color */
+      font-family: 'Dancing Script', cursive;  /* Lovely cursive font */
+      font-size: 22px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .matrix span {
+      position: absolute;
+      animation: fall 0.5s linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center min-h-screen bg-gradient-to-r from-pink-200 via-pink-300 to-pink-400 relative overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12">
+
+  <!-- Card container -->
+  <div class="bg-white rounded-xl shadow-xl max-w-sm p-6 z-10 relative w-full sm:max-w-md md:max-w-lg lg:max-w-xl">
+    <!-- Card content -->
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-pink-600 mb-2 text-xl sm:text-2xl md:text-3xl">Happy Rose Day!</h2>
+      <p class="text-lg text-gray-700 mb-4 text-sm sm:text-base md:text-lg">
+        Roses are not just flowers, they are symbols of love, beauty, and affection. 
+        May your day be as beautiful and vibrant as a rose.
+      </p>
+      <button id="showFlowersBtn" class="bg-pink-600 text-white py-2 px-6 rounded-full text-lg hover:bg-pink-700 transition duration-300 text-sm sm:text-base md:text-lg">
+        Celebrate Love
+      </button>
+    </div>
+  </div>
+
+  <!-- Matrix Rain -->
+  <div id="matrixRain" class="matrix"></div>
+
+  <!-- Flower container -->
+  <div id="flowerContainer" class="flower-container"></div>
+
+  <script>
+    const showFlowersBtn = document.getElementById('showFlowersBtn');
+    const flowerContainer = document.getElementById('flowerContainer');
+    const matrixRain = document.getElementById('matrixRain');
+
+    // Words to display in the Matrix rain effect
+    const words = ['Love', 'Rose', 'ILY!!', 'Forever', 'Beautiful', 'Happiness', 'Cherish', 'Adore'];
+
+    // Function to create flowers
+    const createFlower = (e) => {
+      const flower = document.createElement('div');
+      flower.classList.add('flower');
+
+      const randomX = Math.random() * 50 - 25;
+      const randomY = Math.random() * 50 - 25;
+      const size = Math.random() * (100 - 60) + 60;
+
+      flower.style.setProperty('--x', `${randomX}vw`);
+      flower.style.setProperty('--y', `${randomY}vh`);
+      flower.style.width = `${size}px`;
+      flower.style.height = `${size}px`;
+      flower.style.left = `${e.clientX - size / 2}px`;
+      flower.style.top = `${e.clientY - size / 2}px`;
+
+      flowerContainer.appendChild(flower);
+
+      setTimeout(() => {
+        flower.remove();
+      }, 2000);
+    };
+
+    // Function to create a Matrix rain effect with words
+    const createMatrixRain = () => {
+      const columnCount = window.innerWidth / 20; // Adjust number of columns
+      for (let i = 0; i < columnCount; i++) {
+        const column = document.createElement('div');
+        column.style.position = 'absolute';
+        column.style.left = `${i * 20}px`;
+        column.style.top = `-20px`;
+
+        // Create falling words for the column
+        const span = document.createElement('span');
+        span.innerText = words[Math.floor(Math.random() * words.length)];
+        column.appendChild(span);
+
+        matrixRain.appendChild(column);
+
+        // Add a delay to each word and add a little space between them
+        const wordDelay = Math.random() * 2 + 1;  // Random delay for each word
+
+        span.style.animationDuration = `${Math.random() * 2 + 3}s`; // Random speed for each word
+        span.style.animationDelay = `${wordDelay}s`; // Add delay for each word
+
+        setTimeout(() => {
+          column.style.animation = `fall ${Math.random() * 3 + 3}s linear infinite`; // Randomize fall speed
+        }, 50);
+      }
+    };
+
+    // Event listener for the button click
+    showFlowersBtn.addEventListener('click', (e) => {
+      // Trigger both the Matrix rain and flower explosion
+      for (let i = 0; i < 50; i++) {
+        createFlower(e);
+      }
+
+      // Call createMatrixRain for matrix rain effect
+      createMatrixRain();
+    });
+  </script>
+
+</body>
+</html>
